@@ -33,7 +33,6 @@ MetaTrader 4 (MT4) 上で動作するイベント駆動型の統合市場分析�
     Dispatcher -->|I/O例外| Fallback[テキストフォールバック\nJSON形式で送信]
 
 💡 主要なエンジニアリング課題と解決策
-
 1. 低レイヤバイナリ操作による multipart/form-data の手動生成
 課題: MT4標準のネットワーク関数（WebRequest）は高レベルなHTTPライブラリを備えておらず、画像ファイルのマルチパート送信に対応していない。
 解決策:
@@ -49,33 +48,28 @@ HTTPヘッダー、境界識別子（Boundary）、メタデータ、画像バ�
 自動キルスイッチ: 当日の損失率が事前に設定した閾値（4.5%）に達した瞬間、シグナル生成および注文監視を完全停止。
 
 🛠 技術スタック
-レイヤ
-採用技術
-選定理由・役割
 開発言語
-MQL4 (C++ Dialect)
-低レイヤメモリ制御、Tick単位のリアルタイム高速処理
-外部通信
-Win32 API / WebRequest
-HTTP/HTTPS通信、カスタムヘッダー制御
-外部基盤
-Google Apps Script (REST API)
-サーバーレスでの動的ライセンス認証・管理
-通知連携
-Discord Webhook API
-リアルタイム通知、チャート画像マルチパート配信
-アーキテクチャ
-イベント駆動型 / 耐障害性設計
-ティック受信トリガー、例外ハンドリング、縮退運転
-
+MQL4 (C++ Dialect) — 低レイヤメモリ制御、Tick単位のリアルタイムイベント駆動処理
+ネットワーク通信
+Win32 API / WebRequest — HTTP/HTTPS通信、カスタムヘッダー制御
+認証・バックエンド基盤
+Google Apps Script (RESTful Web API) — サーバーレスでの動的ライセンス認証・管理
+外部連携
+Discord Webhook API — リアルタイム通知、チャート画像マルチパートバイナリ配信
+アーキテクチャ設計
+イベント駆動型アーキテクチャ / 耐障害性（Fault Tolerance）設計 / サーキットブレーカーパターン
 
 📂 ディレクトリ構成
-.
-├── include/
-│   ├── CircuitBreaker.mqh     # 日次損失監視・フェイルセーフ停止機構
-│   ├── DiscordNotifier.mqh    # バイナリI/O・multipart/form-data動的生成
-│   ├── LicenseAuth.mqh        # GAS REST API認証・指数リトライ制御
-│   └── SymbolResolver.mqh     # ブローカー別シンボル動的バインド
+
+Odins_GUNGUNIR_GOLD-framework/
+│
+├── include/                     # コア設計モジュール群
+│   ├── CircuitBreaker.mqh       # 日次損失監視・フェイルセーフ自動停止機構
+│   ├── DiscordNotifier.mqh      # バイナリI/O・multipart/form-data動的生成
+│   ├── LicenseAuth.mqh          # GAS REST API認証・指数リトライ制御
+│   └── SymbolResolver.mqh       # ブローカー別シンボル動的バインド
+│
 ├── src/
-│   └── Main_Framework.mq4    # ライフサイクル制御（OnInit/OnTick/OnDeinit）
-└── README.md                  # システム仕様・アーキテクチャ設計書
+│   └── Main_Framework.mq4      # ライフサイクル制御（OnInit / OnTick / OnDeinit）
+│
+└── README.md                    # システム仕様・アーキテクチャ設計ドキュメント
