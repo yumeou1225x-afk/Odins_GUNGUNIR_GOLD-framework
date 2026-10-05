@@ -17,7 +17,8 @@ MetaTrader 4 (MT4) 上で動作するイベント駆動型の統合市場分析�
     Init[初期化 / OnInit] --> AuthCheck{ライセンス認証\nGAS REST API}
     AuthCheck -->|認証成功| TickEngine[イベント駆動エンジン\nOnTick]
     AuthCheck -->|通信障害| Retry[リトライ機構\n60秒間隔 / 最大5回]
-    
+
+    🏗 システムアーキテクチャ
     TickEngine --> RiskCheck{日次損失監視\n日次DD 4.5%超過?}
     RiskCheck -->|超過| CircuitBreaker[サーキットブレーカー発動\n全機能緊急停止]
     
